@@ -1,0 +1,642 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Ruta RM 2026</title>
+
+<!-- PWA -->
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#0b0f1a">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Ruta RM">
+<link rel="apple-touch-icon" href="icon-192.png">
+
+<!-- SEO / OG -->
+<meta name="description" content="Ruta de aprendizaje personalizada — Release Manager OXXO 2026">
+
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=DM+Sans:ital,wght@0,300;0,400;0,600;1,300&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0b0f1a;
+    --surface: #111827;
+    --border: #1e2d45;
+    --accent: #e63946;
+    --gold: #f4a261;
+    --green: #52b788;
+    --text: #e2e8f0;
+    --muted: #64748b;
+    --phase1: #e63946;
+    --phase2: #f4a261;
+    --phase3: #ffd166;
+    --phase4: #52b788;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* Grid background */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(230,57,70,0.04) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(230,57,70,0.04) 1px, transparent 1px);
+    background-size: 40px 40px;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .container {
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 40px 24px 80px;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* Header */
+  header {
+    margin-bottom: 48px;
+    border-left: 3px solid var(--accent);
+    padding-left: 20px;
+  }
+
+  .tag {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 8px;
+  }
+
+  h1 {
+    font-family: 'Space Mono', monospace;
+    font-size: clamp(22px, 4vw, 32px);
+    font-weight: 700;
+    line-height: 1.2;
+    color: var(--text);
+  }
+
+  h1 span { color: var(--accent); }
+
+  .subtitle {
+    margin-top: 8px;
+    font-size: 14px;
+    color: var(--muted);
+    font-weight: 300;
+  }
+
+  /* Progress bar */
+  .progress-wrap {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px 24px;
+    margin-bottom: 40px;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+  }
+
+  .progress-label {
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    color: var(--muted);
+    white-space: nowrap;
+  }
+
+  .progress-bar-bg {
+    flex: 1;
+    height: 6px;
+    background: var(--border);
+    border-radius: 999px;
+    overflow: hidden;
+  }
+
+  .progress-bar-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--accent), var(--gold));
+    border-radius: 999px;
+    transition: width 0.5s ease;
+    width: 0%;
+  }
+
+  .progress-pct {
+    font-family: 'Space Mono', monospace;
+    font-size: 13px;
+    color: var(--text);
+    font-weight: 700;
+    min-width: 36px;
+    text-align: right;
+  }
+
+  /* Phase */
+  .phase {
+    margin-bottom: 32px;
+    opacity: 0;
+    transform: translateY(16px);
+    animation: fadeUp 0.5s ease forwards;
+  }
+
+  .phase:nth-child(1) { animation-delay: 0.1s; }
+  .phase:nth-child(2) { animation-delay: 0.2s; }
+  .phase:nth-child(3) { animation-delay: 0.3s; }
+  .phase:nth-child(4) { animation-delay: 0.4s; }
+
+  @keyframes fadeUp {
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .phase-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 16px;
+  }
+
+  .phase-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  .phase-title {
+    font-family: 'Space Mono', monospace;
+    font-size: 12px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    font-weight: 700;
+  }
+
+  .phase-timeline {
+    font-size: 11px;
+    color: var(--muted);
+    margin-left: auto;
+    font-family: 'Space Mono', monospace;
+  }
+
+  /* Course card */
+  .course-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 18px 20px;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+    cursor: pointer;
+    transition: border-color 0.2s, background 0.2s, transform 0.15s;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .course-card::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 3px;
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+
+  .course-card:hover {
+    transform: translateX(4px);
+    border-color: #2a3a55;
+  }
+
+  .course-card.done {
+    background: #0d1f14;
+    border-color: #1a3a25;
+  }
+
+  .course-card.done::before { opacity: 1; background: var(--green); }
+
+  /* Custom checkbox */
+  .check-box {
+    width: 22px;
+    height: 22px;
+    border: 2px solid var(--muted);
+    border-radius: 6px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+    margin-top: 2px;
+  }
+
+  .course-card.done .check-box {
+    background: var(--green);
+    border-color: var(--green);
+  }
+
+  .check-icon {
+    display: none;
+    color: #0b0f1a;
+    font-size: 13px;
+    font-weight: 700;
+  }
+
+  .course-card.done .check-icon { display: block; }
+
+  .course-info { flex: 1; }
+
+  .course-name {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--text);
+    margin-bottom: 4px;
+    transition: color 0.2s;
+  }
+
+  .course-card.done .course-name {
+    color: var(--green);
+    text-decoration: line-through;
+    text-decoration-color: #2a6645;
+  }
+
+  .course-desc {
+    font-size: 12px;
+    color: var(--muted);
+    line-height: 1.5;
+    font-weight: 300;
+  }
+
+  .course-tags {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+    margin-top: 8px;
+  }
+
+  .tag-pill {
+    font-size: 10px;
+    font-family: 'Space Mono', monospace;
+    padding: 2px 8px;
+    border-radius: 999px;
+    border: 1px solid var(--border);
+    color: var(--muted);
+    background: rgba(255,255,255,0.03);
+  }
+
+  .course-platform {
+    font-size: 10px;
+    font-family: 'Space Mono', monospace;
+    color: var(--muted);
+    text-align: right;
+    white-space: nowrap;
+    padding-top: 2px;
+  }
+
+  .course-link {
+    display: inline-block;
+    margin-top: 10px;
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.08em;
+    color: var(--accent);
+    text-decoration: none;
+    border: 1px solid rgba(230,57,70,0.3);
+    padding: 4px 10px;
+    border-radius: 4px;
+    transition: background 0.2s, color 0.2s;
+  }
+
+  .course-link:hover {
+    background: rgba(230,57,70,0.1);
+    color: #ff6b76;
+  }
+
+  .course-card.done .course-link {
+    color: var(--green);
+    border-color: rgba(82,183,136,0.3);
+  }
+
+  .course-card.done .course-link:hover {
+    background: rgba(82,183,136,0.1);
+  }
+
+  /* Done stamp */
+  .done-stamp {
+    display: none;
+    position: absolute;
+    right: 16px;
+    bottom: 12px;
+    font-family: 'Space Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.1em;
+    color: var(--green);
+    opacity: 0.5;
+    text-transform: uppercase;
+  }
+
+  .course-card.done .done-stamp { display: block; }
+
+  /* Footer note */
+  .footer-note {
+    margin-top: 48px;
+    padding: 20px 24px;
+    background: rgba(244,162,97,0.05);
+    border: 1px solid rgba(244,162,97,0.15);
+    border-radius: 10px;
+    font-size: 13px;
+    color: var(--muted);
+    line-height: 1.7;
+  }
+
+  .footer-note strong { color: var(--gold); }
+
+  .reset-btn {
+    display: inline-block;
+    margin-top: 16px;
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+    border: 1px solid var(--border);
+    padding: 8px 16px;
+    border-radius: 6px;
+    cursor: pointer;
+    background: transparent;
+    transition: color 0.2s, border-color 0.2s;
+  }
+
+  .reset-btn:hover { color: var(--accent); border-color: var(--accent); }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <header>
+    <div class="tag">📋 Release Manager · OXXO / FEMSA</div>
+    <h1>Ruta de <span>Aprendizaje</span><br>2026</h1>
+    <p class="subtitle">9 cursos · 4 fases · ~6 meses · Platzi + certificaciones oficiales</p>
+  </header>
+
+  <div class="progress-wrap">
+    <span class="progress-label">PROGRESO TOTAL</span>
+    <div class="progress-bar-bg">
+      <div class="progress-bar-fill" id="progressFill"></div>
+    </div>
+    <span class="progress-pct" id="progressPct">0%</span>
+  </div>
+
+  <!-- Phase 1 -->
+  <div class="phase">
+    <div class="phase-header">
+      <div class="phase-dot" style="background:#e63946"></div>
+      <span class="phase-title" style="color:#e63946">Fase 1 — Impacto Inmediato</span>
+      <span class="phase-timeline">Meses 1–2</span>
+    </div>
+
+    <div class="course-card" data-id="c1" onclick="toggle(this)">
+      <div class="check-box"><span class="check-icon">✓</span></div>
+      <div class="course-info">
+        <div class="course-name">GitHub Copilot</div>
+        <div class="course-desc">Automatiza CHGs, comunicados, scripts de packaging y documentación de patches. Reducción directa de tiempo en artefactos de release.</div>
+        <div class="course-tags">
+          <span class="tag-pill">IA aplicada</span>
+          <span class="tag-pill">Productividad</span>
+          <span class="tag-pill">SCM</span>
+        </div>
+        <a class="course-link" href="https://platzi.com/cursos/github-copilot/" target="_blank" onclick="event.stopPropagation()">→ Ver en Platzi</a>
+      </div>
+      <div class="course-platform">Platzi</div>
+      <div class="done-stamp">✓ Completado</div>
+    </div>
+
+    <div class="course-card" data-id="c2" onclick="toggle(this)">
+      <div class="check-box"><span class="check-icon">✓</span></div>
+      <div class="course-info">
+        <div class="course-name">Prompt Engineering con IA</div>
+        <div class="course-desc">Dominar el arte de instruir modelos de IA para generar sesiones de blindaje, pases de contexto, correos y reportes DORA de manera eficiente.</div>
+        <div class="course-tags">
+          <span class="tag-pill">IA</span>
+          <span class="tag-pill">Automatización</span>
+          <span class="tag-pill">Liderazgo</span>
+        </div>
+        <a class="course-link" href="https://platzi.com/cursos/prompt-engineering/" target="_blank" onclick="event.stopPropagation()">→ Ver en Platzi</a>
+      </div>
+      <div class="course-platform">Platzi</div>
+      <div class="done-stamp">✓ Completado</div>
+    </div>
+  </div>
+
+  <!-- Phase 2 -->
+  <div class="phase">
+    <div class="phase-header">
+      <div class="phase-dot" style="background:#f4a261"></div>
+      <span class="phase-title" style="color:#f4a261">Fase 2 — Fortalecimiento Técnico</span>
+      <span class="phase-timeline">Meses 2–4</span>
+    </div>
+
+    <div class="course-card" data-id="c3" onclick="toggle(this)">
+      <div class="check-box"><span class="check-icon">✓</span></div>
+      <div class="course-info">
+        <div class="course-name">Git y GitHub</div>
+        <div class="course-desc">Ramas, pull requests, releases, seguridad y automatizaciones. Autoridad técnica real para liderar conversaciones con Configuration Management y SCM.</div>
+        <div class="course-tags">
+          <span class="tag-pill">GitHub</span>
+          <span class="tag-pill">Versiones</span>
+          <span class="tag-pill">Colaboración</span>
+        </div>
+        <a class="course-link" href="https://platzi.com/cursos/gitgithub/" target="_blank" onclick="event.stopPropagation()">→ Ver en Platzi</a>
+      </div>
+      <div class="course-platform">Platzi</div>
+      <div class="done-stamp">✓ Completado</div>
+    </div>
+
+    <div class="course-card" data-id="c4" onclick="toggle(this)">
+      <div class="check-box"><span class="check-icon">✓</span></div>
+      <div class="course-info">
+        <div class="course-name">Introducción a DevOps</div>
+        <div class="course-desc">Ciclo completo desde build hasta deploy. Hablar el mismo idioma que QA y Transición Distribuida. Base conceptual del Gobierno de Versiones.</div>
+        <div class="course-tags">
+          <span class="tag-pill">DevOps</span>
+          <span class="tag-pill">CI/CD</span>
+          <span class="tag-pill">Pipelines</span>
+        </div>
+        <a class="course-link" href="https://platzi.com/cursos/introduccion-devops/" target="_blank" onclick="event.stopPropagation()">→ Ver en Platzi</a>
+      </div>
+      <div class="course-platform">Platzi</div>
+      <div class="done-stamp">✓ Completado</div>
+    </div>
+
+    <div class="course-card" data-id="c5" onclick="toggle(this)">
+      <div class="check-box"><span class="check-icon">✓</span></div>
+      <div class="course-info">
+        <div class="course-name">CI/CD con GitHub Actions y Azure DevOps</div>
+        <div class="course-desc">Conecta directamente con tu stack actual. Entenderás qué sucede en los pipelines que liberas y podrás optimizar el proceso de release end-to-end.</div>
+        <div class="course-tags">
+          <span class="tag-pill">Azure DevOps</span>
+          <span class="tag-pill">Automatización</span>
+          <span class="tag-pill">Terraform</span>
+        </div>
+        <a class="course-link" href="https://platzi.com/cursos/azure-devops/" target="_blank" onclick="event.stopPropagation()">→ Ver en Platzi</a>
+      </div>
+      <div class="course-platform">Platzi</div>
+      <div class="done-stamp">✓ Completado</div>
+    </div>
+  </div>
+
+  <!-- Phase 3 -->
+  <div class="phase">
+    <div class="phase-header">
+      <div class="phase-dot" style="background:#ffd166"></div>
+      <span class="phase-title" style="color:#ffd166">Fase 3 — Diferenciación Profesional</span>
+      <span class="phase-timeline">Meses 4–6</span>
+    </div>
+
+    <div class="course-card" data-id="c6" onclick="toggle(this)">
+      <div class="check-box"><span class="check-icon">✓</span></div>
+      <div class="course-info">
+        <div class="course-name">DevSecOps</div>
+        <div class="course-desc">Incorporar seguridad al ciclo de release. Muy alineado con tu concepto de "Blindaje". Lenguaje de C-level sobre riesgo, control y cumplimiento.</div>
+        <div class="course-tags">
+          <span class="tag-pill">Seguridad</span>
+          <span class="tag-pill">DevSecOps</span>
+          <span class="tag-pill">Riesgo</span>
+        </div>
+        <a class="course-link" href="https://platzi.com/cursos/gitlab/" target="_blank" onclick="event.stopPropagation()">→ Ver en Platzi (DevOps + GitLab)</a>
+      </div>
+      <div class="course-platform">Platzi</div>
+      <div class="done-stamp">✓ Completado</div>
+    </div>
+
+    <div class="course-card" data-id="c7" onclick="toggle(this)">
+      <div class="check-box"><span class="check-icon">✓</span></div>
+      <div class="course-info">
+        <div class="course-name">Agentes IA con LangGraph / APIs de LLMs</div>
+        <div class="course-desc">Construir automatizaciones complejas: agentes que monitoreen releases, generen reportes DORA automáticamente o consoliden status de despliegue por tienda.</div>
+        <div class="course-tags">
+          <span class="tag-pill">Agentes IA</span>
+          <span class="tag-pill">LLMs</span>
+          <span class="tag-pill">DORA</span>
+        </div>
+        <a class="course-link" href="https://platzi.com/cursos/agentes-langgraph/" target="_blank" onclick="event.stopPropagation()">→ Ver en Platzi</a>
+      </div>
+      <div class="course-platform">Platzi</div>
+      <div class="done-stamp">✓ Completado</div>
+    </div>
+  </div>
+
+  <!-- Phase 4 -->
+  <div class="phase">
+    <div class="phase-header">
+      <div class="phase-dot" style="background:#52b788"></div>
+      <span class="phase-title" style="color:#52b788">Fase 4 — Marco Formal</span>
+      <span class="phase-timeline">Meses 6+</span>
+    </div>
+
+    <div class="course-card" data-id="c8" onclick="toggle(this)">
+      <div class="check-box"><span class="check-icon">✓</span></div>
+      <div class="course-info">
+        <div class="course-name">ITIL 4 Foundation</div>
+        <div class="course-desc">Platzi da el contexto. PeopleCert da la credencial oficial. Respaldo formal para el Gobierno de Versiones que ya ejerces en la práctica.</div>
+        <div class="course-tags">
+          <span class="tag-pill">ITIL 4</span>
+          <span class="tag-pill">Certificación</span>
+          <span class="tag-pill">PeopleCert</span>
+        </div>
+        <a class="course-link" href="https://platzi.com/cursos/devops/" target="_blank" onclick="event.stopPropagation()">→ Ver DevOps en Platzi</a>
+        &nbsp;
+        <a class="course-link" href="https://www.peoplecert.org/browse-certifications/it-governance-and-service-management/ITIL-1" target="_blank" onclick="event.stopPropagation()">→ Cert. oficial PeopleCert</a>
+      </div>
+      <div class="course-platform">Platzi + PeopleCert</div>
+      <div class="done-stamp">✓ Completado</div>
+    </div>
+
+    <div class="course-card" data-id="c9" onclick="toggle(this)">
+      <div class="check-box"><span class="check-icon">✓</span></div>
+      <div class="course-info">
+        <div class="course-name">Gestión de Proyectos (Ruta PM)</div>
+        <div class="course-desc">Metodologías formales que respaldan tu liderazgo sin autoridad formal. Base para PMP o PMI-ACP como siguiente credencial internacional.</div>
+        <div class="course-tags">
+          <span class="tag-pill">PM</span>
+          <span class="tag-pill">Liderazgo</span>
+          <span class="tag-pill">PMP</span>
+        </div>
+        <a class="course-link" href="https://platzi.com/cursos/gestion/" target="_blank" onclick="event.stopPropagation()">→ Ver en Platzi</a>
+        &nbsp;
+        <a class="course-link" href="https://platzi.com/ruta/gestion-proyectos/" target="_blank" onclick="event.stopPropagation()">→ Ruta completa PM</a>
+      </div>
+      <div class="course-platform">Platzi + PMI</div>
+      <div class="done-stamp">✓ Completado</div>
+    </div>
+  </div>
+
+  <div class="footer-note">
+    <strong>💡 Tip:</strong> Haz clic en cada curso para marcarlo como completado. El progreso se guarda en tu navegador automáticamente. El orden sugerido está optimizado para <strong>impacto inmediato en tu rol actual</strong> — puedes avanzar las fases si algún tema ya lo dominas.
+    <br><br>
+    <button class="reset-btn" onclick="resetAll()">↺ Reiniciar progreso</button>
+  </div>
+
+</div>
+
+<script>
+  const STORAGE_KEY = 'rm_roadmap_v1';
+
+  function loadState() {
+    try {
+      return JSON.parse(localStorage.getItem(STORAGE_KEY)) || {};
+    } catch { return {}; }
+  }
+
+  function saveState(state) {
+    try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch {}
+  }
+
+  function toggle(card) {
+    const id = card.dataset.id;
+    card.classList.toggle('done');
+    const state = loadState();
+    state[id] = card.classList.contains('done');
+    saveState(state);
+    updateProgress();
+  }
+
+  function updateProgress() {
+    const cards = document.querySelectorAll('.course-card');
+    const done = document.querySelectorAll('.course-card.done').length;
+    const pct = Math.round((done / cards.length) * 100);
+    document.getElementById('progressFill').style.width = pct + '%';
+    document.getElementById('progressPct').textContent = pct + '%';
+  }
+
+  function resetAll() {
+    if (!confirm('¿Reiniciar todo el progreso?')) return;
+    document.querySelectorAll('.course-card').forEach(c => c.classList.remove('done'));
+    saveState({});
+    updateProgress();
+  }
+
+  // Init
+  const state = loadState();
+  document.querySelectorAll('.course-card').forEach(card => {
+    if (state[card.dataset.id]) card.classList.add('done');
+  });
+  updateProgress();
+
+  // Register service worker
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('sw.js').catch(() => {});
+  }
+</script>
+</body>
+</html>
